@@ -1,11 +1,28 @@
 import uvicorn
+from os import environ as env
 from fastapi import FastAPI
 from api import router
 from fastapi.middleware.cors import CORSMiddleware
+import psycopg2
 
-from tbay import db
 
-db.test_db()
+def test_db():
+    db = None
+    try:
+        db = psycopg2.connect(user=env['PGUSER'],
+                              password=env['PGPWD'],
+                              host=env['PGHOST'],
+                              port=env['PGPORT'],
+                              database='postgres')
+        cur = db.cursor()
+        cur.execute('select 1')
+    except (Exception, psycopg2.Error) as error:
+        raise
+    finally:
+        if db: db.close()
+
+
+test_db()
 
 app = FastAPI()
 

@@ -19,13 +19,3 @@ def connect():
 #         self.conn.close()
 
 
-def test_db():
-    db = None
-    try:
-        db = connect()
-        cur = db.cursor()
-        cur.execute('select count(1) from public.threads')
-    except (Exception, psycopg2.Error) as error:
-        raise
-    finally:
-        db.close()
