@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from psycopg2 import Error, sql
+from psycopg2 import Error
 
 import db
 
