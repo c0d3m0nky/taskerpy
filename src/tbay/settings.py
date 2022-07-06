@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from psycopg2 import Error
 
-from .db import Db
+from .db import connect
 
 router = APIRouter(
     prefix="/tbay/settings",
@@ -12,10 +12,10 @@ router = APIRouter(
 
 @router.get("/{id}")
 async def get_settings(id: str):
-    db = None
+    conn = None
     try:
-        db = Db()
-        cur = db.conn.cursor()
+        conn = connect()
+        cur = conn.cursor()
         cur.execute("select s.data from public.settings s where id = %s;", (id,))
         res = cur.fetchone()
 
@@ -26,19 +26,19 @@ async def get_settings(id: str):
     except (Exception, Error) as error:
         return {"err": error}
     finally:
-        db.close()
+        if conn: conn.close()
 
 
 @router.put("/{id}")
 async def upsert_setting(id: str, data: dict):
-    db = None
+    conn = None
     try:
-        db = Db()
-        cur = db.conn.cursor()
+        conn = connect()
+        cur = conn.cursor()
         cur.callproc('upsert_setting', (id, data))
-        db.conn.commit()
+        conn.commit()
         return {"success": True}
     except (Exception, Error) as error:
         return {"err": error}
     finally:
-        db.close()
+        if conn: conn.close()
