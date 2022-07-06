@@ -37,6 +37,7 @@ pylev==1.4.0
 pyparsing==2.4.7
 python-dotenv==0.20.0
 PyYAML==6.0
+qbittorrent-api==2022.5.32
 requests==2.26.0
 requests-toolbelt==0.9.1
 SecretStorage==3.3.1

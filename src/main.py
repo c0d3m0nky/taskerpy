@@ -3,9 +3,9 @@ from fastapi import FastAPI
 from api import router
 from fastapi.middleware.cors import CORSMiddleware
 
-from tbay import db
-
-db.test_db()
+# from tbay import db
+#
+# db.test_db()
 
 app = FastAPI()
 
