@@ -10,7 +10,7 @@ def connect():
                             password=env['PGPWD'],
                             host=env['PGHOST'],
                             port=env['PGPORT'],
-                            database=env['PGDB'])
+                            database=env['PGTBDB'] if 'PGTBDB' in env else 'tbay_mod')
 
 
 def dispose(conn, cur):
