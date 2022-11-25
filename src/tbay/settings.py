@@ -1,6 +1,5 @@
 from fastapi import APIRouter
 from psycopg2 import Error
-from fastapi.responses import JSONResponse
 
 from .db import connect
 
@@ -21,7 +20,7 @@ async def get_settings(id: str):
         res = cur.fetchone()
 
         if res:
-            return JSONResponse(content=res[0], headers={"fromrepo": "True"})
+            return res[0]
         else:
             return {}
     except (Exception, Error) as error:
