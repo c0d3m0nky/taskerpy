@@ -1,6 +1,6 @@
 import uvicorn
 from os import environ as env
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from api import router
 from fastapi.middleware.cors import CORSMiddleware
 import psycopg2
@@ -40,8 +40,8 @@ app.add_middleware(
 
 
 @app.get("/")
-async def root():
-    return {"message": "Howdy World"}
+async def root(request: Request):
+    return {"docs": f'{request.url.scheme}://{request.url.netloc}/docs'}
 
 
 if __name__ == '__main__':
