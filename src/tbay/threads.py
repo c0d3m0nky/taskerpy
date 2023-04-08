@@ -37,15 +37,15 @@ async def get_threads():
 
 
 @router.post("/")
-async def check_threads(threads: List[str]):
+async def check_threads(threads: List[int]):
     conn = None
     try:
         conn = connect()
         cur = conn.cursor()
-        qry = sql.SQL('select * from public.threads where id in ({})').format(
-            sql.SQL(',').join(map(sql.Literal, threads)))
+        qry = cur.mogrify('select * from public.threads where id2 in ({0})'.format(','.join(str(i) for i in threads)))
         cur.execute(qry)
-        return {x[0]: x[1] for x in cur.fetchall()}
+        res = cur.fetchall()
+        return {x[4]: x[1] for x in res}
     except (Exception, Error) as error:
         return err_response(error)
     finally:
@@ -53,14 +53,14 @@ async def check_threads(threads: List[str]):
 
 
 @router.put("/")
-async def upsert_thread(key: str, data: dict):
+async def upsert_thread(key: str, id2: int, data: dict):
     conn = None
     try:
         conn = connect()
         cur = conn.cursor()
         if ('maybe' in data and data['maybe']) or ('priority' in data and data['priority']):
             data['ignore'] = False
-        cur.callproc('upsert_thread', (key, data))
+        cur.callproc('upsert_thread', (key, id2, data))
         conn.commit()
         return {"success": True}
     except (Exception, Error) as error:
@@ -76,10 +76,11 @@ async def upsert_threads(threads: Dict[str, dict]):
         conn = connect()
         cur = conn.cursor()
         for k in threads:
+            id2 = int(threads[k]['id2'])
             data = threads[k]
             if ('maybe' in data and data['maybe']) or ('priority' in data and data['priority']):
                 data['ignore'] = False
-            cur.callproc('upsert_thread', (k, data))
+            cur.callproc('upsert_thread', (k, id2, data))
         conn.commit()
         return {"success": True}
     except (Exception, Error) as error:
