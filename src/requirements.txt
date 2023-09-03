@@ -66,3 +66,4 @@ watchfiles==0.15.0
 webencodings==0.5.1
 websockets==10.3
 yarl==1.9.2
+furl==2.1.2
